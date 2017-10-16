@@ -1,44 +1,134 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="ISO-8859-1">
-	<title>Alta de vehiculos</title>
+<meta charset="ISO-8859-1">
+<title>Alta de vehiculos</title>
+
+<script type="text/javascript">
 	
-	<script type="text/javascript">
-	
+		function getListaIdsForm(){
+		
+			return ['numeroVehiculo',
+				'anioFabricacion',
+				'marca',
+				'motor',
+				'patente',
+				'nombre',
+				'mail'];
+		}
+		
+		function validarTodo(){
+
+			var ok = true;
+			
+			ok1 = validarIdVehiculo();
+			ok2 = validarAnioVehiculo();
+			ok3 = validarMotor();
+			ok4 = validarMail();
+			
+			return ok1 && ok2 && ok3 && ok4;
+		}
+		
+		function confirmar(){
+			
+			if(validarTodo()){
+				
+				var listaIds = getListaIdsForm();
+				
+				//INPUTS
+				for (var i = 0; i < listaIds.length; i++) {
+					
+					var nombreComponente = listaIds[i];
+					var valor = document.getElementById(nombreComponente).value;
+					document.getElementById(nombreComponente+'Ingresado').innerHTML = valor;
+				}
+				
+				//ANTIGUEDAD
+				document.getElementById('antiguedadIngresado').innerHTML = getAntiguedad();
+				
+				//RADIO ALQUILADO
+				var alquiladoRadioList = document.getElementById("altaVehiculoForm").elements.namedItem("alquilado");
+				for (var i = 0; i < alquiladoRadioList.length; i++) {
+					
+					var radioIt = alquiladoRadioList[i];
+					if(radioIt.checked){
+						
+						document.getElementById('alquiladoIngresado').innerHTML = radioIt.value;
+						break;
+					}
+				}
+				
+				//ACCESORIOS
+				var accesoriosList = document.getElementById("accesorios").options;
+				var accesoriosString = '';
+				for (var i = 0; i < accesoriosList.length; i++) {
+					
+					var accesorioIt = accesoriosList[i];
+					if(accesorioIt.selected){
+						
+						accesoriosString = accesoriosString + ' ' + accesorioIt.value; 
+					}
+				}
+				document.getElementById('accesoriosIngresado').innerHTML = accesoriosString;
+			}
+		}
+		
 		function validarIdVehiculo(){
 			
 			var numeroVehiculo = parseInt(document.getElementById('numeroVehiculo').value);
 			var error = '';
+			var ok = true;
 			
-			if(numeroVehiculo < 1 || numeroVehiculo > 100)
+			if(numeroVehiculo == null || isNaN(numeroVehiculo) || numeroVehiculo == '' || numeroVehiculo < 1 || numeroVehiculo > 100){
 				error = 'El numero de vehiculo debe estar comprendido entre 1 y 100';
-			
+				ok = false;
+			}
 			document.getElementById('mensajeErrorNumero').innerHTML = error;
+			
+			return ok;
+		}
+		
+		function getAntiguedad(){
+			
+			var anioPat = parseInt(document.getElementById('anioFabricacion').value);
+			var hoy = new Date();
+			var anio = hoy.getFullYear();
+			
+			return anio - anioPat;
 		}
 		
 		function validarAnioVehiculo(){
 			
 			var anio = parseInt(document.getElementById('anioFabricacion').value);
 			var error = '';
+			var ok = true;
 			
-			if(anio < 2013)
+			if(anio == null || isNaN(anio) || anio == '' || anio < 2013){
+				document.getElementById('antiguedad').innerHTML = '';
 				error = 'El año del vehiculo debe ser mayor a 2013';
+				ok = false;
+			}
 			else
-				document.getElementById('antiguedad').innerHTML = (2017 - anio);
+				document.getElementById('antiguedad').innerHTML = getAntiguedad();
 
 			document.getElementById('mensajeErrorAnio').innerHTML = error;
+			
+			return ok;
 		}
 
 		function validarMotor(){
 			
 			var motor = document.getElementById('motor').value;
 			var error = '';
+			var ok = true;
 			
-			if(motor.length < 8)
+			if(motor == null || motor == '' || motor.length < 8){
 				error = 'La longitud debe minimo de 8 digitos';
-
+				ok = false;
+			}
 			document.getElementById('mensajeErrorMotor').innerHTML = error;
+			
+			return ok;
 		}
 
 		function validarMail() {
@@ -73,108 +163,161 @@
 			document.getElementById('mensajeErrorMotor').innerHTML = '';
 			document.getElementById('mensajeErrorAnio').innerHTML = '';
 			document.getElementById('mensajeErrorNumero').innerHTML = '';
-		}		
+		}
 	</script>
 </head>
 <body>
-	
+
 	<h1>Alta de Vehiculos</h1>
-	
+
 	<h2>Datos del vehiculo</h2>
-	<form name="altaVehiculoForm">
+	<form name="altaVehiculoForm" id="altaVehiculoForm">
 		<table>
 			<tr>
-				<td colspan="2">
-					<label>Numero vehiculo: </label>
-					<input id="numeroVehiculo" name="numeroVehiculo" type="text" onBlur="validarIdVehiculo()" />
-					<p id="mensajeErrorNumero" style="color:red"></p>
-				</td>
+				<td colspan="2"><label>Numero vehiculo: </label> <input
+					id="numeroVehiculo" name="numeroVehiculo" type="text"
+					onChange="validarIdVehiculo()" />
+					<p id="mensajeErrorNumero" style="color: red"></p></td>
 			</tr>
 			<tr>
-				<td>
-					<label>Año fabricacion: </label>
-					<input id="anioFabricacion" name="anioFabricacion" type="text" onBlur="validarAnioVehiculo()" />
-					<p id="mensajeErrorAnio" style="color:red"></p>
-				</td>
-				<td>
-					<label>Antiguedad: </label>
-					<span id="antiguedad"></span>
-				</td>
+				<td><label>Año fabricacion: </label> <input
+					id="anioFabricacion" name="anioFabricacion" type="text"
+					onChange="validarAnioVehiculo()" />
+					<p id="mensajeErrorAnio" style="color: red"></p></td>
+				<td><label>Antiguedad: </label> <span id="antiguedad"></span></td>
 			</tr>
 			<tr>
-				<td colspan="2">
-					<label>Marca: </label>
-					<select id="marca" name="marca">
+				<td colspan="2"><label>Marca: </label> <select id="marca"
+					name="marca">
 						<option value="FIAT">FIAT</option>
 						<option value="CHEVROLET">CHEVROLET</option>
 						<option value="FORD">FORD</option>
 						<option value="BMW">BMW</option>
 						<option value="MERCEDES">MERCEDES</option>
 						<option value="VOLKSWAGEN">VOLKSWAGEN</option>
-					</select>
-				</td>
+				</select></td>
 			</tr>
 			<tr>
-				<td>
-					<label>Motor:</label>
-					<input id="motor" name="motor" type="text" onBlur="validarMotor()" />
-					<p id="mensajeErrorMotor" style="color:red"></p>
-				</td>
-				<td>
-					<label>Patente:</label>
-					<input id="patente" name="patente" type="text" />
-				</td>
+				<td><label>Motor:</label> <input id="motor" name="motor"
+					type="text" onChange="validarMotor()" />
+					<p id="mensajeErrorMotor" style="color: red"></p></td>
+				<td><label>Patente:</label> <input id="patente" name="patente"
+					type="text" /></td>
 			</tr>
 			<tr>
-				<td colspan="2">
-					<label>Alquilado:</label>
-					<input type="radio" name="alquilado" value="si" />Si
-  					<input type="radio" name="alquilado" value="no" />No	
-				</td>
+				<td colspan="2"><label>Alquilado:</label> <input type="radio"
+					name="alquilado" value="si" />Si <input type="radio"
+					name="alquilado" value="no" />No</td>
 			</tr>
 			<tr>
-				<td colspan="2">
-				<label>Accesorios:</label>
-					<select multiple="multiple" id="accesorios" name="accesorios">
+				<td colspan="2"><label>Accesorios:</label> <select
+					multiple="multiple" id="accesorios" name="accesorios">
 						<option value="AIRBAG">AIRBAG</option>
 						<option value="AIRE_ACONDICIONADO">AIRE ACONDICIONADO</option>
 						<option value="MP3">MP3</option>
 						<option value="VIDRIOS_POLARIZADOS">VIDRIOS POLARIZADOS</option>
-					</select>
-				</td>
+				</select></td>
 			</tr>
 			<tr>
-				<td>
-					<label>Nombre y apellido:</label>
-					<input id="nombre" name="nombre" type="text" />
-				</td>
-				<td>
-					<label>E-Mail:</label>
-					<input id="mail" name="mail" type="text" onBlur="validarMail()" />
-					<p id="mensajeErrorMail" style="color:red"></p>
-				</td>
+				<td><label>Nombre y apellido:</label> <input id="nombre"
+					name="nombre" type="text" /></td>
+				<td><label>E-Mail:</label> <input id="mail" name="mail"
+					type="text" onChange="validarMail()" />
+					<p id="mensajeErrorMail" style="color: red"></p></td>
 			</tr>
 			<tr>
 				<td colspan="2">
-					<input type="button" id="confirmar" name="confirmar" value="Confirmar" />
-					<input type="reset" id="borrar" name="borrar" onClick="clearErrores()" value="Borrar" />
-					<input type="button" id="enviarMail" name="enviarMail" onClick="enviarMail()" value="Enviar mail" />
+					<input type="button" id="confirmarBtn" name="confirmarBtn" value="Confirmar" onClick="confirmar()" />
+					<input type="reset" id="borrarBtn" name="borrarBtn" onClick="clearErrores()" value="Borrar" />
+					<input type="button" id="enviarMailBtn" name="enviarMailBtn" onClick="enviarMail()" value="Enviar mail" />
 				</td>
 			</tr>
 		</table>
 	</form>
-	
+
 	<h2>Datos del vehiculo dado de alta</h2>
 
-		<p>Numero vehiculo: </p>
-		<p>Año fabricacion: </p>
-		<p>Antiguedad: </p>
-		<p>Marca: </p>
-		<p>Motor: </p>
-		<p>Patente: </p>
-		<p>Alquilado: </p>
-		<p>Accesorios: </p>
-		<p>Nombre y apellido: </p>
-		<p>E-Mail: </p>
+	<table>
+		<tr>
+			<td>
+				<p>Numero vehiculo:</p>
+			</td>
+			<td>
+				<p id="numeroVehiculoIngresado"></p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>Año fabricacion:</p>
+			</td>
+			<td>
+				<p id="anioFabricacionIngresado"></p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>Antiguedad:</p>
+			</td>
+			<td>
+				<p id="antiguedadIngresado"></p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>Marca:</p>
+			</td>
+			<td>
+				<p id="marcaIngresado"></p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>Motor:</p>
+			</td>
+			<td>
+				<p id="motorIngresado"></p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>Patente:</p>
+			</td>
+			<td>
+				<p id="patenteIngresado"></p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>Alquilado:</p>
+			</td>
+			<td>
+				<p id="alquiladoIngresado"></p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>Accesorios:</p>
+			</td>
+			<td>
+				<p id="accesoriosIngresado"></p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>Nombre y apellido:</p>
+			</td>
+			<td>
+				<p id="nombreIngresado"></p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>E-Mail:</p>
+			</td>
+			<td>
+				<p id="mailIngresado"></p>
+			</td>
+		</tr>
+	</table>
 </body>
 </html>
