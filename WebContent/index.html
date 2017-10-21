@@ -70,6 +70,9 @@
 					}
 				}
 				document.getElementById('accesoriosIngresado').innerHTML = accesoriosString;
+				
+				document.getElementById('tablaDatos').style.display = 'block';
+				document.getElementById('datosH2').style.display = 'block';
 			}
 		}
 		
@@ -105,7 +108,7 @@
 			
 			if(anio == null || isNaN(anio) || anio == '' || anio < 2013){
 				document.getElementById('antiguedad').innerHTML = '';
-				error = 'El año del vehiculo debe ser mayor a 2013';
+				error = 'El a&ntildeo del vehiculo debe ser mayor a 2013';
 				ok = false;
 			}
 			else
@@ -123,7 +126,7 @@
 			var ok = true;
 			
 			if(motor == null || motor == '' || motor.length < 8){
-				error = 'La longitud debe minimo de 8 digitos';
+				error = 'La longitud debe ser minimo de 8 digitos';
 				ok = false;
 			}
 			document.getElementById('mensajeErrorMotor').innerHTML = error;
@@ -164,6 +167,8 @@
 			document.getElementById('mensajeErrorAnio').innerHTML = '';
 			document.getElementById('mensajeErrorNumero').innerHTML = '';
 			document.getElementById('antiguedad').innerHTML = '';
+			document.getElementById('tablaDatos').style.display = 'none';
+			document.getElementById('datosH2').style.display = 'none';
 		}
 	</script>
 </head>
@@ -227,18 +232,19 @@
 					<p id="mensajeErrorMail" style="color: red"></p></td>
 			</tr>
 			<tr>
-				<td colspan="2">
-					<input type="button" id="confirmarBtn" name="confirmarBtn" value="Confirmar" onClick="confirmar()" />
-					<input type="reset" id="borrarBtn" name="borrarBtn" onClick="clearErrores()" value="Borrar" />
-					<input type="button" id="enviarMailBtn" name="enviarMailBtn" onClick="enviarMail()" value="Enviar mail" />
-				</td>
+				<td colspan="2"><input type="button" id="confirmarBtn"
+					name="confirmarBtn" value="Confirmar" onClick="confirmar()" /> <input
+					type="reset" id="borrarBtn" name="borrarBtn"
+					onClick="clearErrores()" value="Borrar" /> <input type="button"
+					id="enviarMailBtn" name="enviarMailBtn" onClick="enviarMail()"
+					value="Enviar mail" /></td>
 			</tr>
 		</table>
 	</form>
 
-	<h2>Datos del vehiculo dado de alta</h2>
+	<h2 id="datosH2" style="display: none;">Datos del vehiculo dado de alta</h2>
 
-	<table>
+	<table id="tablaDatos" style="display: none;">
 		<tr>
 			<td>
 				<p>Numero vehiculo:</p>
